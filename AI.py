@@ -336,7 +336,7 @@ if __name__ == '__main__':
 				for ch in progress.bar(r.iter_content(chunk_size = 2391975),
 									expected_size =(total_length / 1024) + 1):
 					if ch:
-					Pypdf.write(ch)
+						Pypdf.write(ch)
 					
 		# NPPR9-FWDCX-D2C8J-H872K-2YT43
 		elif "jarvis" in query:
