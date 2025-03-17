@@ -5,5 +5,5 @@ def speak(text):
     os.system("sudo docker start piper-tts")
     os.system(commands.replace("string&2", text))
     os.system("sudo docker cp piper-tts:/opt/speech.wav ./")
-    os.system("aplay notification.wav")
-    os.system("aplay speech.wav")
+    os.system("aplay /temp/notification.wav")
+    os.system("aplay /temp/speech.wav")

@@ -10,10 +10,7 @@ system_prompt = "Eres un robot de asistencia para mayores, utilizas una raspberr
 
 
 
-while True:
-
-  user_input = input("User -> ")
-
+def getResponseFromOpenAi(user_message):
   completion = client.chat.completions.create(
     model="gpt-4o-mini-2024-07-18",
     messages=[
@@ -22,8 +19,8 @@ while True:
       },
 
       {"role": "user", 
-      "content": user_input
+      "content": user_message
       }
     ]
   )
-  print(completion.choices[0].message.content)
+  return completion.choices[0].message.content
