@@ -10,7 +10,7 @@ def main():
         user_input = input("user -> ")  # Solicita la entrada del usuario
         response = OpenAI_Module.getResponseFromOpenAi(user_input, system_prompt + "Aquí tienes un resumen de las conversaciones anteriores: " + Memory_Module.Load_memory() + Context_Module.getContext())  # Obtiene la respuesta de OpenAI
         print("Robert -> " + response)  # Imprime la respuesta de OpenAI
-        # Speech_Module.speak(response)  # Utiliza el módulo Speech_interface para hablar la respuesta
+        Speech_Module.speak(response)  # Utiliza el módulo Speech_interface para hablar la respuesta
         Memory_Module.Save_memory(user_input, response)  # Guarda la conversación en memoria
 
 
