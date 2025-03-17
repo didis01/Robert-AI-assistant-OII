@@ -12,4 +12,11 @@ def Save_memory(user_input, robert_response, path="temp/LTM.txt"):
     print("Memory saved in ", path)
     return
 
+
+def Load_memory(path="temp/LTM.txt"):
+    with open(path, 'r') as file:
+        memory = file.read()
+
+    print("Memory loaded from ", path)
+    return memory
     
