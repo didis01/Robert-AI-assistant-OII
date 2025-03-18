@@ -1,37 +1,23 @@
 import datetime
-import python_weather
-import asyncio
-import os
+import os  # Importa el módulo os para manejar variables de entorno
+from dotenv import load_dotenv, find_dotenv  # Importa funciones para cargar variables de entorno desde un archivo .env
+from pathlib import Path  # Importa Path para manejar rutas de archivos
+
+load_dotenv(Path(".env"))  # Carga las variables de entorno desde el archivo .env
+condition = os.getenv("condition")  # Inicializa el cliente OpenAI con la clave API
+
+
 
 def getContext():
-    context = ("La fecha y hora actual es: " + str(datetime.datetime.now()) + 
-               "El tiempo actual es: "
+    context = (
+                "La fecha y hora actual es: " + str(datetime.datetime.now()) + 
+                "La condición fisica o psicológica del usuario es: " + condition
                )
     return context
 
 
 
-async def getweather() -> None:
-  # declare the client. the measuring unit used defaults to the metric system (celcius, km/h, etc.)
-  async with python_weather.Client(unit=python_weather.IMPERIAL) as client:
-    # fetch a weather forecast from a city
-    weather = await client.get('New York')
-    
-    # returns the current day's forecast temperature (int)
-    print(weather.temperature)
-    
-    # get the weather forecast for a few days
-    for daily in weather:
-      print(daily)
-      
-      # hourly forecasts
-      for hourly in daily:
-        print(f' --> {hourly!r}')
+
 
 if __name__ == '__main__':
-  # see https://stackoverflow.com/questions/45600579/asyncio-event-loop-is-closed-when-getting-loop
-  # for more details
-  if os.name == 'nt':
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-  
-  asyncio.run(getweather())
+  print(getContext())
