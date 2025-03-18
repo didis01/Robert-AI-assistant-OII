@@ -10,7 +10,7 @@ condition = os.getenv("condition")  # Inicializa el cliente OpenAI con la clave 
 
 def getContext():
     context = (
-                "La fecha y hora actual es: " + str(datetime.datetime.now()) + 
+                "La fecha y hora actual es: " + str(datetime.datetime.now()) + "\n" + 
                 "La condición fisica o psicológica del usuario es: " + condition
                )
     return context

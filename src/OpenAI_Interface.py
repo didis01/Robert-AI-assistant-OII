@@ -16,7 +16,7 @@ def getResponseFromOpenAi(user_message, system_prompt=system_prompt, context = "
         messages=[
             {"role": "system", "content": system_prompt},  # Mensaje del sistema
             {"role": "user", "content": user_message},  # Mensaje del usuario
-            {"role": "context", "content": context}  # Mensaje del contexto
+            {"role": "developer", "content": context}  # Mensaje del contexto
         ]
     )
     return completion.choices[0].message.content  # Devuelve el contenido de la respuesta generada
