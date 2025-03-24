@@ -49,13 +49,14 @@ async def memory_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Echo the user message."""
-    memory = Memory_Module.Load_memory()
+    user = update.effective_user
+    memory = Memory_Module.Load_memory("temp/" + str(user.id))
     user_input = update.message.text  # Solicita la entrada del usuario
     response = OpenAI_Module.getResponseFromOpenAi(user_input, system_prompt + "Aquí tienes un resumen de las conversaciones anteriores: " + memory, Context_Module.getContext())  # Obtiene la respuesta de OpenAI
     print("Robert -> " + response)  # Imprime la respuesta de OpenAI
     await update.message.reply_text(response)
     Speech_Module.speak(response)  # Utiliza el módulo Speech_interface para hablar la respuesta
-    Memory_Module.Save_memory(user_input, response)  # Guarda la conversación en memoria
+    Memory_Module.Save_memory(user_input, response, "temp/" + str(user.id))  # Guarda la conversación en memoria
 
     
 
