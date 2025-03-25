@@ -38,11 +38,17 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /help is issued."""
-    await update.message.reply_text("Habla y Robert te responde! \n Para consultar la memoria: /memory")
+    await update.message.reply_text("Habla y Robert te responde! \nPara consultar la memoria: /memory \nPara borrar la memoria: /clearmem")
 
 async def memory_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    memory = Memory_Module.Load_memory()
+    user = update.effective_user
+    memory = Memory_Module.Load_memory("temp/" + str(user.id))
     await update.message.reply_text("Memoria: " + memory)
+
+async def clear_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    user = update.effective_user
+    Memory_Module.Clear_memory("temp/" + str(user.id))
+    await update.message.reply_text("Memoria borrada")
 
 
     
@@ -71,6 +77,7 @@ def main() -> None:
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
     application.add_handler(CommandHandler("memory", memory_command))
+    application.add_handler(CommandHandler("clearmem", clear_command))
 
     # on non command i.e message - echo the message on Telegram
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))

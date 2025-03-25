@@ -32,3 +32,8 @@ def Load_memory(path="temp/LTM"):
     print("Memory loaded from ", path + ".txt")
     return memory
     
+
+def Clear_memory(path="temp/LTM"):
+    with open(path + ".txt", 'w') as file:
+        file.write(" ")
+    print("Memory cleared from ", path)
