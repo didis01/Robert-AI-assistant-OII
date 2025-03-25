@@ -20,3 +20,13 @@ def getResponseFromOpenAi(user_message, system_prompt=system_prompt, context = "
         ]
     )
     return completion.choices[0].message.content  # Devuelve el contenido de la respuesta generada
+
+
+def SttOpenAi(path):
+    audio_file = open(path, "rb")
+    transcription = client.audio.transcriptions.create(
+    model="whisper-1", 
+    file=audio_file
+    ) 
+
+    return transcription.text
