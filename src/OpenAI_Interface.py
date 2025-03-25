@@ -23,10 +23,13 @@ def getResponseFromOpenAi(user_message, system_prompt=system_prompt, context = "
 
 
 def SttOpenAi(path):
-    audio_file = open(path, "rb")
-    transcription = client.audio.transcriptions.create(
-    model="whisper-1", 
-    file=audio_file
-    ) 
-
-    return transcription.text
+    try:
+        with open(path, "rb") as audio_file:
+            transcription = client.audio.transcriptions.create(
+                model="whisper-1", 
+                file=audio_file
+            )
+            return transcription.text
+    except Exception as e:
+        print(f"Error en la transcripción: {str(e)}")
+        return None
