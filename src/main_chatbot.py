@@ -5,6 +5,7 @@ from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandl
 from dotenv import load_dotenv, find_dotenv  # Importa funciones para cargar variables de entorno desde un archivo .env
 from pathlib import Path  # Importa Path para manejar rutas de archivos
 import os
+import requests
 import OpenAI_Interface as OpenAI_Module  # Importa el módulo OpenAI_Interface como OpenAI_Module
 import Speech_interface as Speech_Module  # Importa el módulo Speech_interface como Speech_Module
 import Memory_interface as Memory_Module  # Importa el módulo Memory_interface como Memory_Module
@@ -53,7 +54,7 @@ async def clear_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 
     
 
-async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def text_handeler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Echo the user message."""
     user = update.effective_user
     memory = Memory_Module.Load_memory("temp/" + str(user.id))
@@ -64,6 +65,27 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     Speech_Module.speak(response)  # Utiliza el módulo Speech_interface para hablar la respuesta
     Memory_Module.Save_memory(user_input, response, "temp/" + str(user.id))  # Guarda la conversación en memoria
 
+
+
+async def voice_handeler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    try:
+        os.remove('temp/voice.oga')
+
+    except:
+        print("No temp file to remove")
+
+    new_file = await context.bot.get_file(update.message.voice.file_id)
+    open('temp/voice.oga', 'wb').write(requests.get(new_file.file_path).content)
+    try:
+        os.remove('temp/voice.wav')
+
+    except:
+        print("No temp file to remove")
+
+
+    #subprocess.run(['ffmpeg', '-i', 'voice.oga', 'voice.wav'])
+    #transcription = openai.Audio.transcribe("whisper-1", open("output.wav", "rb"))
+    #print(transcription.text)
     
 
 
@@ -80,10 +102,12 @@ def main() -> None:
     application.add_handler(CommandHandler("clearmem", clear_command))
 
     # on non command i.e message - echo the message on Telegram
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, text_handeler))
+    application.add_handler(MessageHandler(filters.VOICE, voice_handeler))
 
     # Run the bot until the user presses Ctrl-C
     application.run_polling(allowed_updates=Update.ALL_TYPES)
+    
 
 
 if __name__ == "__main__":
