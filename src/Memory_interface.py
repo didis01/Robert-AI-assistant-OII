@@ -28,7 +28,6 @@ def Load_memory(path="temp/LTM"):
         with open(path + ".txt", 'r') as file:
             memory = file.read()
  
-
     print("Memory loaded from ", path + ".txt")
     return memory
     

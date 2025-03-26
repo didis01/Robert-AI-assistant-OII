@@ -1,9 +1,8 @@
-import logging
-
 from telegram import ForceReply, Update
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
 from dotenv import load_dotenv, find_dotenv  # Importa funciones para cargar variables de entorno desde un archivo .env
 from pathlib import Path  # Importa Path para manejar rutas de archivos
+import logging
 import os
 import requests
 import OpenAI_Interface as OpenAI_Module  # Importa el módulo OpenAI_Interface como OpenAI_Module
@@ -16,6 +15,7 @@ system_prompt = "Eres un robot de asistencia para mayores llamado Robert, utiliz
 load_dotenv(Path(".env"))  # Carga las variables de entorno desde el archivo .env
 api_key = os.getenv("bot_api_key")  # Inicializa el cliente OpenAI con la clave API
 
+
 # Enable logging
 logging.basicConfig(
     format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -26,8 +26,8 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-# Define a few command handlers. These usually take the two arguments update and
-# context.
+
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user
@@ -35,7 +35,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         rf"Hola {user.mention_html()}! Soy Robert, un robot asistencial.",
         reply_markup = ForceReply(selective=True),
     )
-
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /help is issued."""
@@ -64,6 +63,7 @@ async def text_handeler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     await update.message.reply_text(response)
     Speech_Module.speak(response)  # Utiliza el módulo Speech_interface para hablar la respuesta
     Memory_Module.Save_memory(user_input, response, "temp/" + str(user.id))  # Guarda la conversación en memoria
+
 
 
 
@@ -117,6 +117,7 @@ def main() -> None:
     # Run the bot until the user presses Ctrl-C
     application.run_polling(allowed_updates=Update.ALL_TYPES)
     
+
 
 
 if __name__ == "__main__":
