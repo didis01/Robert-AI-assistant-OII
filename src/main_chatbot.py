@@ -14,11 +14,11 @@ system_prompt = "Eres un robot de asistencia para mayores llamado Robert, utiliz
 
 
 load_dotenv(Path(".env"))  # Carga las variables de entorno desde el archivo .env
-api_key=os.getenv("bot_api_key")  # Inicializa el cliente OpenAI con la clave API
+api_key = os.getenv("bot_api_key")  # Inicializa el cliente OpenAI con la clave API
 
 # Enable logging
 logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
+    format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 # set higher logging level for httpx to avoid all GET and POST requests being logged
 logging.getLogger("httpx").setLevel(logging.WARNING)
@@ -33,7 +33,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user = update.effective_user
     await update.message.reply_html(
         rf"Hola {user.mention_html()}! Soy Robert, un robot asistencial.",
-        reply_markup=ForceReply(selective=True),
+        reply_markup = ForceReply(selective=True),
     )
 
 
@@ -68,24 +68,33 @@ async def text_handeler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 
 
 async def voice_handeler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    user = update.effective_user
     try:
-        os.remove('temp/voice.oga')
+        os.remove("temp/"+ str(user.id) + ".oga")
 
     except:
-        print("No temp file to remove")
+        print("No temp .oga file to remove")
 
     new_file = await context.bot.get_file(update.message.voice.file_id)
-    open('temp/voice.oga', 'wb').write(requests.get(new_file.file_path).content)
+    open("temp/"+ str(user.id) + ".oga", 'wb').write(requests.get(new_file.file_path).content)
     try:
-        os.remove('temp/voice.wav')
+        os.remove("temp/"+ str(user.id) + ".wav")
 
     except:
-        print("No temp file to remove")
+        print("No temp .wav file to remove")
 
+    os.system("ffmpeg -i temp/"+ str(user.id) + ".oga temp/"+ str(user.id) + ".wav")
+    transcription = OpenAI_Module.SttOpenAi("temp/"+ str(user.id) + ".wav")
+    print("User -> " + transcription)
 
-    #subprocess.run(['ffmpeg', '-i', 'voice.oga', 'voice.wav'])
-    #transcription = openai.Audio.transcribe("whisper-1", open("output.wav", "rb"))
-    #print(transcription.text)
+    memory = Memory_Module.Load_memory("temp/" + str(user.id))
+    user_input = transcription
+    response = OpenAI_Module.getResponseFromOpenAi(user_input, system_prompt + "Aquí tienes un resumen de las conversaciones anteriores: " + memory, Context_Module.getContext())  # Obtiene la respuesta de OpenAI
+    print("Robert -> " + response)  # Imprime la respuesta de OpenAI
+    await update.message.reply_text(response)
+    Speech_Module.speak(response)  # Utiliza el módulo Speech_interface para hablar la respuesta
+    Memory_Module.Save_memory(user_input, response, "temp/" + str(user.id))  # Guarda la conversación en memoria
+
     
 
 
