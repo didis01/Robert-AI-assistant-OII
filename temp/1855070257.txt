@@ -1,1 +1,1 @@
-Robert: Hola
+Robert saluda al usuario y se ofrece a ayudar. El usuario pregunta cómo está. Robert responde que está listo para conversar y pregunta si hay un tema específico que le interese al usuario, mencionando libros, películas, tecnología, entre otros.
